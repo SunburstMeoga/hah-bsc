@@ -20,7 +20,7 @@
                     show-word-limit />
             </div>
             <div class="to-promote">
-                <van-button type="info">{{ buttonWord }}</van-button>
+                <van-button type="info" @click="signPopularize()">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
@@ -45,7 +45,7 @@ export default {
             currentAddress: '',
             superiorAddress: '',
             sign: '签名数据',
-            buttonWord: '推广'
+            buttonWord: '推广',
             // columns: [
             //     {
             //         label: '序号',
@@ -72,9 +72,63 @@ export default {
             //     { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
 
             // ],
+            networkId: 97,
+            signJson: {}
         }
     },
     methods: {
+        //掐名推广
+        async signPopularize() {
+            let temp = this.web3.eth.accounts.create()
+            let address_ = temp.address
+            let privateKey_ = temp.privateKey
+            this.signParent_address = address_
+            this.signParent_private = privateKey_
+
+            // const chainId = this.networkId
+            // console.log(chainId)
+            const msgParams = {
+                domain: {
+                    chainId: this.networkId,
+                    name: 'Hash Ahead @BSC',
+                    verifyingContract: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
+                    version: '1'
+                },
+                message: { addr: address_ },
+                primaryType: 'popularize',
+                types: {
+                    EIP712Domain: [
+                        { name: 'name', type: 'string' },
+                        { name: 'version', type: 'string' },
+                        { name: 'chainId', type: 'uint256' },
+                        { name: 'verifyingContract', type: 'address' },
+                    ],
+                    popularize: [
+                        { name: 'addr', type: 'address' },
+                    ],
+                },
+            };
+            try {
+
+                const from = window.ethereum.selectedAddress;
+                const sign = await window.ethereum.request({
+                    method: 'eth_signTypedData_v4',
+                    params: [from, JSON.stringify(msgParams)],
+                });
+
+                this.signJson = {
+                    sign: sign,
+                    key: privateKey_,
+                    address: address_,
+                    child: from,
+                };
+                this.sign = JSON.stringify(this.signJson)
+            } catch (err) {
+                console.log(err)
+            }
+        },
+
+        //登录
         async login() {
             if (typeof window.ethereum !== 'undefined') {
                 await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -83,6 +137,8 @@ export default {
                 //console.log('')
             }
         },
+
+        //初始化
         init() {
             this.currentAddress = window.ethereum.selectedAddress
             this.user_addr = window.ethereum.selectedAddress
@@ -124,6 +180,7 @@ export default {
             }
         },
 
+        //交易
         transfer() {
             const usdt = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             const data = usdt.methods.transfer(this.user_addr, this.web3.utils.toWei('1', 'ether')).encodeABI()
