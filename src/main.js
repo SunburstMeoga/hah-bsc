@@ -4,6 +4,12 @@ import App from './App.vue'
 
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import VueGoodTablePlugin from 'vue-good-table';
+
+// import the styles
+import 'vue-good-table/dist/vue-good-table.css'
+
+Vue.use(VueGoodTablePlugin);
 Vue.use(Vant);
 
 Vue.config.productionTip = false

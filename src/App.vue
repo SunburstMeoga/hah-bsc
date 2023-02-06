@@ -5,8 +5,10 @@
     <mt-field label="转出地址" placeholder="请输入地址" v-model="addr" readonly></mt-field>
     <mt-field label="转入地址" placeholder="请输入地址" v-model="user_addr" readonly></mt-field>
     <mt-button type="primary" @click="transfer()">转账</mt-button> -->
-    <van-tabs v-model="active">
-      <van-tab title="推广">内容 1</van-tab>
+    <van-tabs animated style="margin-top:20px;" v-model="active">
+      <van-tab title="推广">
+        <to-promote></to-promote>
+      </van-tab>
       <van-tab title="投票">内容 2</van-tab>
       <van-tab title="算力挖矿">内容 3</van-tab>
       <van-tab title="流动挖矿">内容 4</van-tab>
@@ -16,15 +18,17 @@
 
 <script>
 import { config } from './const/config.js'
+import ToPromote from './components/ToPromote.vue'
 export default {
   components: {
+    ToPromote
   },
   data() {
     return {
       web3: new this.Web3(window.ethereum),
       addr: '',
       user_addr: '0xaC76dd1172bE3F240Cc2495C972ccEd56a5030b6',
-      active: 2,
+      active: 0,
     };
   },
   methods: {
