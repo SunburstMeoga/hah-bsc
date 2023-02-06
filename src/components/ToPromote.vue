@@ -11,7 +11,7 @@
 
                 </div>
                 <div class="superior-address address-item">
-                    <van-field v-model="currentAddress" style="padding: 0;" rows="2" autosize label="上级地址："
+                    <van-field v-model="superiorAddress" style="padding: 0;" rows="2" autosize label="上级地址："
                         type="textarea" readonly show-word-limit />
                 </div>
             </div>
@@ -20,13 +20,13 @@
                     show-word-limit />
             </div>
             <div class="to-promote">
-                <van-button type="info">推广</van-button>
+                <van-button type="info">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
             </div>
             <div class="table-content">
-                <vue-good-table :columns="columns" :rows="rows" />
+                <!-- <vue-good-table :columns="columns" :rows="rows" /> -->
             </div>
         </div>
     </div>
@@ -39,39 +39,39 @@ export default {
     data() {
         return {
             web3: new this.Web3(window.ethereum),
-            addr: '',
-            user_addr: '0xaC76dd1172bE3F240Cc2495C972ccEd56a5030b6',
+            user_addr: '',
             active: 0,
 
-            currentAddress: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
-            superiorAddress: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
+            currentAddress: '',
+            superiorAddress: '',
             sign: '签名数据',
-            columns: [
-                {
-                    label: '序号',
-                    field: 'number',
-                },
-                {
-                    label: '地址',
-                    field: 'address',
-                },
-                {
-                    label: '投票',
-                    field: 'vote',
-                },
-                {
-                    label: '算力',
-                    field: 'power'
-                },
-            ],
-            rows: [
-                { id: 1, number: "1", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                { id: 1, number: "2", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                { id: 1, number: "3", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                { id: 1, number: "4", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            buttonWord: '推广'
+            // columns: [
+            //     {
+            //         label: '序号',
+            //         field: 'number',
+            //     },
+            //     {
+            //         label: '地址',
+            //         field: 'address',
+            //     },
+            //     {
+            //         label: '投票',
+            //         field: 'vote',
+            //     },
+            //     {
+            //         label: '算力',
+            //         field: 'power'
+            //     },
+            // ],
+            // rows: [
+            //     { id: 1, number: "1", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            //     { id: 1, number: "2", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            //     { id: 1, number: "3", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            //     { id: 1, number: "4", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            //     { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
 
-            ],
+            // ],
         }
     },
     methods: {
@@ -84,7 +84,24 @@ export default {
             }
         },
         init() {
-            this.addr = window.ethereum.selectedAddress
+            this.currentAddress = window.ethereum.selectedAddress
+            this.user_addr = window.ethereum.selectedAddress
+
+            let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
+            if (window.ethereum.selectedAddress !== null) {
+                web3Contract.methods.spreads(window.ethereum.selectedAddress).call().then((v) => {
+                    if (v.parent === '0x0000000000000000000000000000000000000000') {
+                        this.buttonWord = '签名'
+                        this.superiorAddress = ''
+                    } else {
+                        this.buttonWord = '推广'
+                        this.superiorAddress = v.parent
+
+                    }
+                    console.log(v)
+                })
+            }
+
         },
 
         sleep(ms) {

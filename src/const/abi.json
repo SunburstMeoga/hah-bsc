@@ -35,6 +35,37 @@
             {
                 "indexed": true,
                 "internalType": "address",
+                "name": "parent",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "children",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "cycle",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "Popularize",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
                 "name": "from",
                 "type": "address"
             },
@@ -56,25 +87,60 @@
     },
     {
         "inputs": [],
-        "name": "DOMAIN_SEPARATOR",
+        "name": "USDT",
         "outputs": [
             {
-                "internalType": "bytes32",
+                "internalType": "address",
                 "name": "",
-                "type": "bytes32"
+                "type": "address"
             }
         ],
         "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "PERMIT_TYPEHASH",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "addLiquidity",
         "outputs": [
             {
-                "internalType": "bytes32",
+                "internalType": "uint256",
+                "name": "usdt_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "liquidity",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "",
-                "type": "bytes32"
+                "type": "address"
+            }
+        ],
+        "name": "airdrops",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "cycle",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "vote",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -149,12 +215,124 @@
     },
     {
         "inputs": [],
+        "name": "begin",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "cycle",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "cycle_period",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "cycle_profit",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "decimals",
         "outputs": [
             {
                 "internalType": "uint8",
                 "name": "",
                 "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "height",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "height_profit",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "lps",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "lp",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "quantity",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "weight",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "lock_number",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -174,19 +352,13 @@
         "type": "function"
     },
     {
-        "inputs": [
+        "inputs": [],
+        "name": "pair",
+        "outputs": [
             {
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "name": "nonces",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -196,23 +368,8 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "owner",
+                "name": "addr",
                 "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "deadline",
-                "type": "uint256"
             },
             {
                 "internalType": "uint8",
@@ -230,9 +387,338 @@
                 "type": "bytes32"
             }
         ],
-        "name": "permit",
+        "name": "popularize",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "ret",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "temp",
+                "type": "address"
+            },
+            {
+                "internalType": "uint8",
+                "name": "addr_v",
+                "type": "uint8"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "addr_r",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "addr_s",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "uint8",
+                "name": "temp_v",
+                "type": "uint8"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "temp_r",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "temp_s",
+                "type": "bytes32"
+            }
+        ],
+        "name": "popularizeFast",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "ret",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "power_profit_whole",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "power",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "profit",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            }
+        ],
+        "name": "profit",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "lp_value",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "lp_ratio",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "pow_value",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "pow_ratio",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bool",
+                "name": "reflect",
+                "type": "bool"
+            },
+            {
+                "internalType": "uint256",
+                "name": "pow_out_time",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "lp_out_time",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "number",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "liquidity",
+                "type": "uint256"
+            }
+        ],
+        "name": "removeLiquidity",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "amountHAH",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amountUSDT",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr_old",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "addr_new",
+                "type": "address"
+            },
+            {
+                "internalType": "uint8",
+                "name": "v",
+                "type": "uint8"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "r",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "s",
+                "type": "bytes32"
+            }
+        ],
+        "name": "setChild",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            }
+        ],
+        "name": "spreadChild",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "addrs",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "votes",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "powers",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            }
+        ],
+        "name": "spreadParent",
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "addrs",
+                "type": "address[]"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "powers",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            }
+        ],
+        "name": "spreadPower",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "power_",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "spreads",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "parent",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "cycle",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "vote",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "vote_power",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "real_power",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "lock_number",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "spreads_length",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -312,6 +798,125 @@
             }
         ],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferVote",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "voteIn",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "ret",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "voteMining",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "mint",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "f",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "voteOut",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "ret",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "whole_power",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "whole_quantity",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "whole_weight",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     }
 ]
