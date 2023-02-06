@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <!-- <mt-button type="primary" @click="login()">链接网络</mt-button>
-    <hr />
+    <!-- <van-button type="primary" @click="login()">链接网络</van-button> -->
+    <!-- <hr />
     <mt-field label="转出地址" placeholder="请输入地址" v-model="addr" readonly></mt-field>
     <mt-field label="转入地址" placeholder="请输入地址" v-model="user_addr" readonly></mt-field>
     <mt-button type="primary" @click="transfer()">转账</mt-button> -->
@@ -37,7 +37,7 @@ export default {
         await window.ethereum.request({ method: 'eth_requestAccounts' })
         this.init()
       } else {
-        //console.log('')
+        console.log('error')
       }
     },
     init() {
