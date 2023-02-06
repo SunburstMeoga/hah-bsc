@@ -1,8 +1,8 @@
 import abi from './abi.json'
 
 const config = {
-    erc20_abi : abi,
-    con_addr : '0x4B45FF16A8a276B60cd0267d500194C9Bd018F9F'
+    erc20_abi: abi,
+    con_addr: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8'
 }
 
 export { config }

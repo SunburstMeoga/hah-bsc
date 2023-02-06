@@ -1,13 +1,10 @@
 import Vue from 'vue'
-import Mint from 'mint-ui'
-import { Field } from 'mint-ui'
-
 
 import App from './App.vue'
-import 'mint-ui/lib/style.css'
 
-Vue.use(Mint)
-Vue.component(Field.name, Field)
+import Vant from 'vant';
+import 'vant/lib/index.css';
+Vue.use(Vant);
 
 Vue.config.productionTip = false
 
