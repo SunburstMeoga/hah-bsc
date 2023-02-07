@@ -25,8 +25,27 @@
             <div class="address-table">
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
             </div>
-            <div class="table-content">
-                <vue-good-table :columns="columns" :rows="rows" />
+            <div class="table-title">
+                <div class="title-item" v-for="(item, index) in titleList" :key="index"
+                    :class="index === 1 ? 'address-title' : ''">
+                    {{ item }}
+                </div>
+            </div>
+            <div class="table-all">
+                <div class="all-item" v-for="(item, index) in addressList" :key="index">
+                    <div class="item-content">
+                        {{ item.number }}
+                    </div>
+                    <div class="item-content item-addrs">
+                        {{ toOmitAddress(item.addrs) }}
+                    </div>
+                    <div class="item-content">
+                        {{ item.votes }}
+                    </div>
+                    <div class="item-content">
+                        {{ item.powers }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -38,10 +57,11 @@ import { config } from '../const/config.js'
 export default {
     data() {
         return {
+            titleList: ['序号', '地址', '投票', '算力'],
+            addressList: [],
             web3: new this.Web3(window.ethereum),
             user_addr: '',
             active: 0,
-
             currentAddress: '',
             superiorAddress: '',
             sign: '',
@@ -50,42 +70,29 @@ export default {
             havePreAddress: false,
             networkId: 97,
             signJson: {},
-            columns: [
-                {
-                    label: '序号',
-                    field: 'number',
-                },
-                {
-                    label: '地址',
-                    field: 'address',
-                },
-                {
-                    label: '投票',
-                    field: 'vote',
-                },
-                {
-                    label: '算力',
-                    field: 'power'
-                },
-            ],
-            rows: [
-                // { id: 1, number: "1", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                // { id: 1, number: "2", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                // { id: 1, number: "3", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                // { id: 1, number: "4", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-                // { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-            ],
 
         }
     },
     methods: {
+        // to omit address str
+        toOmitAddress(str) {
+            let arr = str.split('')
+            let strArr = []
+            arr.map((item, index) => {
+                if (index <= 5 || index > arr.length - 7) {
+                    strArr.push(item)
+                }
+            })
+            strArr.splice(6, 0, "......");
+            return strArr.join('')
+        },
         //current address to promote record
         getPromoteRecord() {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.spreadChild(this.currentAddress).call().then((result) => {
                 console.log('列表', result)
-                this.rows = [
-                    { id: 1, number: "1", address: result.addrs[0], vote: result.votes[0], power: result.powers[0] },
+                this.addressList = [
+                    { number: 1, addrs: result.addrs[0], votes: result.votes[0], powers: result.powers[0] }
                 ]
             })
         },
@@ -284,5 +291,59 @@ input {
 
 .signature-data {
     margin-bottom: 20px;
+}
+
+.address-table {}
+
+.table-title {
+    border: 1px solid #eee;
+
+    width: 100%;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.title-item {
+    width: 50px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    color: #646566;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.address-title {
+    flex: 1;
+}
+
+.table-all {
+    border: 1px solid #eee;
+    width: 100%;
+    border-bottom: 0;
+    border-bottom: 0;
+
+}
+
+.all-item {
+    display: flex;
+    height: 26px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+
+}
+
+.item-content {
+    width: 50px;
+    text-align: center;
+    font-size: 12px;
+    color: #646566;
+}
+
+.item-addrs {
+    flex: 1;
 }
 </style>
