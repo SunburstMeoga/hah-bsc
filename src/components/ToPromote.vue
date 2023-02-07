@@ -26,7 +26,7 @@
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
             </div>
             <div class="table-content">
-                <!-- <vue-good-table :columns="columns" :rows="rows" /> -->
+                <vue-good-table :columns="columns" :rows="rows" />
             </div>
         </div>
     </div>
@@ -49,33 +49,32 @@ export default {
             isLinked: false,
             havePreAddress: false,
             networkId: 97,
-            signJson: {}
-            // columns: [
-            //     {
-            //         label: '序号',
-            //         field: 'number',
-            //     },
-            //     {
-            //         label: '地址',
-            //         field: 'address',
-            //     },
-            //     {
-            //         label: '投票',
-            //         field: 'vote',
-            //     },
-            //     {
-            //         label: '算力',
-            //         field: 'power'
-            //     },
-            // ],
-            // rows: [
-            //     { id: 1, number: "1", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-            //     { id: 1, number: "2", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-            //     { id: 1, number: "3", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-            //     { id: 1, number: "4", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-            //     { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
-
-            // ],
+            signJson: {},
+            columns: [
+                {
+                    label: '序号',
+                    field: 'number',
+                },
+                {
+                    label: '地址',
+                    field: 'address',
+                },
+                {
+                    label: '投票',
+                    field: 'vote',
+                },
+                {
+                    label: '算力',
+                    field: 'power'
+                },
+            ],
+            rows: [
+                // { id: 1, number: "1", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+                // { id: 1, number: "2", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+                // { id: 1, number: "3", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+                // { id: 1, number: "4", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+                // { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
+            ],
 
         }
     },
@@ -83,8 +82,11 @@ export default {
         //current address to promote record
         getPromoteRecord() {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
-            web3Contract.spreadChild(this.currentAddress).then((result) => {
-                consoloe.log(result)
+            web3Contract.methods.spreadChild(this.currentAddress).call().then((result) => {
+                console.log('列表', result)
+                this.rows = [
+                    { id: 1, number: "1", address: result.addrs[0], vote: result.votes[0], power: result.powers[0] },
+                ]
             })
         },
         //click promote or sign button
@@ -199,6 +201,7 @@ export default {
                         this.buttonWord = '推广'
                         this.superiorAddress = v.parent
                         this.havePreAddress = true
+                        this.getPromoteRecord()
                     }
                     console.log(v)
                 })
@@ -245,7 +248,7 @@ export default {
     },
     mounted() {
         this.init()
-        this.getPromoteRecord()
+        // this.getPromoteRecord()
     }
 }
 </script>
