@@ -25,10 +25,10 @@
 
         <div class="button-group">
             <div class="button-item">
-                <van-button type="info">投票</van-button>
+                <van-button round type="info">投票</van-button>
             </div>
             <div class="button-item">
-                <van-button type="primary">撤投</van-button>
+                <van-button round type="primary">撤投</van-button>
             </div>
 
         </div>
