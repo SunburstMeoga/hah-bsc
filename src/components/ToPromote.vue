@@ -80,6 +80,13 @@ export default {
         }
     },
     methods: {
+        //current address to promote record
+        getPromoteRecord() {
+            let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
+            web3Contract.spreadChild(this.currentAddress).then((result) => {
+                consoloe.log(result)
+            })
+        },
         //click promote or sign button
         clickButton() {
             // havePreAddress to to promote
@@ -92,13 +99,17 @@ export default {
         },
         // to promote
         async popularize() {
+            let signObj = JSON.parse(this.sign);
+            console.log(this.sign)
+            console.log(signObj)
+            console.log(JSON.parse(this.sign))
             let eth_lib = require('eth-lib');
-            let vrs = eth_lib.Account.decodeSignature(this.signJson.sign);
-            let sign_temp_data = eth_lib.Account.sign(this.web3.utils.keccak256(this.currentAddress), this.signJson.key);
+            let vrs = eth_lib.Account.decodeSignature(signObj.sign);
+            let sign_temp_data = eth_lib.Account.sign(this.web3.utils.keccak256(this.currentAddress), signObj.key);
             let vrs_temp = eth_lib.Account.decodeSignature(sign_temp_data);
 
-            const con = new this.web3.eth.Contract(this.abi, '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8');
-            let data = con.methods.popularizeFast(this.signJson.child, this.signJson.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();
+            const con = new this.web3.eth.Contract(config.erc20_abi, '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8');
+            let data = con.methods.popularizeFast(signObj.child, signObj.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();
             const transactionParameters = {
                 gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
                 to: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
@@ -110,7 +121,7 @@ export default {
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
             });
-            console.log(voteResult)
+
         },
 
         //sign
@@ -234,6 +245,7 @@ export default {
     },
     mounted() {
         this.init()
+        this.getPromoteRecord()
     }
 }
 </script>
