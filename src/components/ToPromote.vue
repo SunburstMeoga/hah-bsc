@@ -2,7 +2,7 @@
     <div class="container">
         <div class="link-network">
             <div class="link-network">
-                <van-button type="info" @click="login()">链接网络</van-button>
+                <van-button round type="info" @click="login()">链接网络</van-button>
             </div>
             <div class="address">
                 <div class="current-address address-item">
@@ -20,7 +20,7 @@
                     show-word-limit />
             </div>
             <div class="to-promote" v-show="isLinked">
-                <van-button type="info" @click="clickButton()">{{ buttonWord }}</van-button>
+                <van-button round type="info" @click="clickButton()">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
