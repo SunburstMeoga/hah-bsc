@@ -15,7 +15,12 @@ Vue.use(Vant);
 Vue.config.productionTip = false
 
 import Web3 from 'web3'
+
 Vue.prototype.Web3 = Web3
+// import eth_lib from 'eth-lib'
+
+// Vue.prototype.eth_lib = eth_lib
+
 
 new Vue({
     render: h => h(App)

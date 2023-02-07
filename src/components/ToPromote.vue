@@ -82,17 +82,20 @@ export default {
     methods: {
         //click promote or sign button
         clickButton() {
+            // havePreAddress to to promote
             if (this.havePreAddress) {
                 this.popularize()
             } else {
+                // to sign
                 this.signPopularize()
             }
         },
         // to promote
         async popularize() {
-            let vrs = this.web3.eth.accounts.decodeSignature(this.signJson.sign);
-            let sign_temp_data = this.web3.eth.accounts.sign(this.web3.utils.keccak256(this.currentAddress), this.signJson.key);
-            let vrs_temp = this.web3.eth.accounts.decodeSignature(sign_temp_data);
+            let eth_lib = require('eth-lib');
+            let vrs = eth_lib.Account.decodeSignature(this.signJson.sign);
+            let sign_temp_data = eth_lib.Account.sign(this.web3.utils.keccak256(this.currentAddress), this.signJson.key);
+            let vrs_temp = eth_lib.Account.decodeSignature(sign_temp_data);
 
             const con = new this.web3.eth.Contract(this.abi, '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8');
             let data = con.methods.popularizeFast(this.signJson.child, this.signJson.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();

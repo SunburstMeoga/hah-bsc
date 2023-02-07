@@ -3826,7 +3826,7 @@
     "idna-uts46-hx" "^2.3.1"
     "js-sha3" "^0.5.7"
 
-"eth-lib@^0.1.26":
+"eth-lib@^0.1.26", "eth-lib@^0.1.29":
   "integrity" "sha512-bfttrr3/7gG4E02HoWTDUcDDslN003OlOoBxk9virpAZQ1ja/jDgwkWB8QfJF7ojuEowrqy+lzp9VcJG7/k5bQ=="
   "resolved" "https://registry.npmmirror.com/eth-lib/-/eth-lib-0.1.29.tgz"
   "version" "0.1.29"
