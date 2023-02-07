@@ -19,7 +19,7 @@
                 <van-field v-model="sign" style="padding: 0;" rows="2" autosize label="签名数据：" type="textarea"
                     show-word-limit />
             </div>
-            <div class="to-promote">
+            <div class="to-promote" v-show="isLinked">
                 <van-button type="info" @click="signPopularize()">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
@@ -44,8 +44,9 @@ export default {
 
             currentAddress: '',
             superiorAddress: '',
-            sign: '签名数据',
+            sign: '',
             buttonWord: '推广',
+            isLinked: false,
             // columns: [
             //     {
             //         label: '序号',
@@ -77,16 +78,35 @@ export default {
         }
     },
     methods: {
-        //掐名推广
+        // to promote
+        async Popularize() {
+            let vrs = this.web3.eth.accounts.decodeSignature(this.signJson.sign);
+            let sign_temp_data = this.web3.eth.accounts.sign(this.web3.utils.keccak256(this.currentAddress), this.signJson.key);
+            let vrs_temp = this.web3.eth.accounts.decodeSignature(sign_temp_data);
+
+            const con = new this.web3.eth.Contract(this.abi, '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8');
+            let data = con.methods.popularizeFast(this.signJson.child, this.signJson.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();
+            const transactionParameters = {
+                gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                to: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
+                from: window.ethereum.selectedAddress,
+                data: data,
+                chainId: this.web3.utils.toHex(this.chainId),
+            };
+            let voteResult = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [transactionParameters],
+            });
+            console.log(voteResult)
+        },
+
+        //sign
         async signPopularize() {
             let temp = this.web3.eth.accounts.create()
             let address_ = temp.address
             let privateKey_ = temp.privateKey
             this.signParent_address = address_
             this.signParent_private = privateKey_
-
-            // const chainId = this.networkId
-            // console.log(chainId)
             const msgParams = {
                 domain: {
                     chainId: this.networkId,
@@ -128,7 +148,7 @@ export default {
             }
         },
 
-        //登录
+        //login metamask
         async login() {
             if (typeof window.ethereum !== 'undefined') {
                 await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -138,7 +158,7 @@ export default {
             }
         },
 
-        //初始化
+        //init metamask
         init() {
             this.currentAddress = window.ethereum.selectedAddress
             this.user_addr = window.ethereum.selectedAddress
@@ -146,6 +166,7 @@ export default {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             if (window.ethereum.selectedAddress !== null) {
                 web3Contract.methods.spreads(window.ethereum.selectedAddress).call().then((v) => {
+                    this.isLinked = true
                     if (v.parent === '0x0000000000000000000000000000000000000000') {
                         this.buttonWord = '签名'
                         this.superiorAddress = ''
