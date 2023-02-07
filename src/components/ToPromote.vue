@@ -20,7 +20,7 @@
                     show-word-limit />
             </div>
             <div class="to-promote" v-show="isLinked">
-                <van-button type="info" @click="signPopularize()">{{ buttonWord }}</van-button>
+                <van-button type="info" @click="clickButton()">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
                 <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
@@ -47,6 +47,9 @@ export default {
             sign: '',
             buttonWord: '推广',
             isLinked: false,
+            havePreAddress: false,
+            networkId: 97,
+            signJson: {}
             // columns: [
             //     {
             //         label: '序号',
@@ -73,13 +76,20 @@ export default {
             //     { id: 1, number: "5", address: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8', vote: '3000', field: 23423 },
 
             // ],
-            networkId: 97,
-            signJson: {}
+
         }
     },
     methods: {
+        //click promote or sign button
+        clickButton() {
+            if (this.havePreAddress) {
+                this.popularize()
+            } else {
+                this.signPopularize()
+            }
+        },
         // to promote
-        async Popularize() {
+        async popularize() {
             let vrs = this.web3.eth.accounts.decodeSignature(this.signJson.sign);
             let sign_temp_data = this.web3.eth.accounts.sign(this.web3.utils.keccak256(this.currentAddress), this.signJson.key);
             let vrs_temp = this.web3.eth.accounts.decodeSignature(sign_temp_data);
@@ -170,10 +180,11 @@ export default {
                     if (v.parent === '0x0000000000000000000000000000000000000000') {
                         this.buttonWord = '签名'
                         this.superiorAddress = ''
+                        this.havePreAddress = false
                     } else {
                         this.buttonWord = '推广'
                         this.superiorAddress = v.parent
-
+                        this.havePreAddress = true
                     }
                     console.log(v)
                 })
