@@ -12,7 +12,9 @@
       <van-tab title="投票">
         <votes></votes>
       </van-tab>
-      <van-tab title="算力挖矿">内容 3</van-tab>
+      <van-tab title="算力挖矿">
+        <power></power>
+      </van-tab>
       <van-tab title="流动挖矿">内容 4</van-tab>
     </van-tabs>
   </div>
@@ -22,11 +24,14 @@
 import { config } from './const/config.js'
 import ToPromote from './components/ToPromote.vue'
 import Votes from './components/Votes.vue'
+import Power from './components/Power.vue'
+
 
 export default {
   components: {
     ToPromote,
-    Votes
+    Votes,
+    Power
   },
   data() {
     return {
