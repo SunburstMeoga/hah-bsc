@@ -63,7 +63,6 @@ export default {
             havePreAddress: false,
             networkId: 97,
             signJson: {},
-
         }
     },
     methods: {
@@ -205,6 +204,7 @@ export default {
 
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             if (window.ethereum.selectedAddress !== null) {
+
                 web3Contract.methods.spreads(window.ethereum.selectedAddress).call().then((v) => {
                     this.isLinked = true
                     if (v.parent === '0x0000000000000000000000000000000000000000') {
