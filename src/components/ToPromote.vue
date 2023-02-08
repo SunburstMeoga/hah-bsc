@@ -6,24 +6,24 @@
             </div>
             <div class="address">
                 <div class="current-address address-item">
-                    <van-field v-model="currentAddress" style="padding: 0;" rows="2" autosize label="当前地址："
+                    <van-field v-model="currentAddress" style="padding: 0;" rows="2" autosize label="当前地址:"
                         type="textarea" readonly show-word-limit />
 
                 </div>
                 <div class="superior-address address-item">
-                    <van-field v-model="superiorAddress" style="padding: 0;" rows="2" autosize label="上级地址："
+                    <van-field v-model="superiorAddress" style="padding: 0;" rows="2" autosize label="上级地址:"
                         type="textarea" readonly show-word-limit />
                 </div>
             </div>
             <div class="signature-data">
-                <van-field v-model="sign" style="padding: 0;" rows="2" autosize label="签名数据：" type="textarea"
+                <van-field v-model="sign" style="padding: 0;" rows="2" autosize label="签名数据:" type="textarea"
                     show-word-limit />
             </div>
             <div class="to-promote" v-show="isLinked">
                 <van-button round type="info" @click="clickButton()">{{ buttonWord }}</van-button>
             </div>
             <div class="address-table">
-                <van-field style="padding: 0;" rows="1" autosize label="当前地址：" type="input" readonly show-word-limit />
+                <van-field style="padding: 0;" rows="1" autosize label="当前地址:" type="input" readonly show-word-limit />
             </div>
             <div class="table-title">
                 <div class="title-item" v-for="(item, index) in titleList" :key="index"
