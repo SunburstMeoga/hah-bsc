@@ -1,5 +1,7 @@
 <template>
     <div class="container">
+        <operating-address></operating-address>
+
         <van-field v-model="value1" style="padding: 10px 0;" name="当前周期" label="当前周期:"
             placeholder="xxx(2023-xx-xx xx:xx:xx至2023-xx-xx xx:xx:xx)" readonly />
         <van-field v-model="value1" style="padding: 10px 0;" name="提交算力" label="提交算力:" placeholder="xxxx" readonly />
@@ -25,9 +27,9 @@
     </div>
 </template>
 
-<script>
+<script>import OperatingAddress from './OperatingAddress.vue'
 export default {
-
+    components: { OperatingAddress },
 }
 </script>
 

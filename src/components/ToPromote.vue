@@ -4,17 +4,7 @@
             <div class="link-network">
                 <van-button round type="info" @click="login()">链接网络</van-button>
             </div>
-            <div class="address">
-                <div class="current-address address-item">
-                    <van-field v-model="currentAddress" style="padding: 0;" rows="2" autosize label="当前地址:"
-                        type="textarea" readonly show-word-limit />
-
-                </div>
-                <div class="superior-address address-item">
-                    <van-field v-model="superiorAddress" style="padding: 0;" rows="2" autosize label="上级地址:"
-                        type="textarea" readonly show-word-limit />
-                </div>
-            </div>
+            <operating-address></operating-address>
             <div class="signature-data">
                 <van-field v-model="sign" style="padding: 0;" rows="2" autosize label="签名数据:" type="textarea"
                     show-word-limit />
@@ -54,7 +44,10 @@
 
 <script>
 import { config } from '../const/config.js'
+import OperatingAddress from './OperatingAddress.vue'
+import { Toast } from 'vant';
 export default {
+    components: { OperatingAddress, Toast },
     data() {
         return {
             titleList: ['序号', '地址', '投票', '算力'],
@@ -98,6 +91,10 @@ export default {
         },
         //click promote or sign button
         clickButton() {
+            Toast.loading({
+                message: '加载中...',
+                forbidClick: true,
+            });
             // havePreAddress to to promote
             if (this.havePreAddress) {
                 this.popularize()
@@ -130,7 +127,7 @@ export default {
                 method: 'eth_sendTransaction',
                 params: [transactionParameters],
             });
-
+            Toast.clear()
         },
 
         //sign
@@ -176,24 +173,34 @@ export default {
                     child: from,
                 };
                 this.sign = JSON.stringify(this.signJson)
+                Toast.clear()
+
             } catch (err) {
                 console.log(err)
+                Toast.fail(err)
+
             }
         },
 
         //login metamask
         async login() {
+            Toast.loading({
+                message: '加载中...',
+                forbidClick: true,
+            });
             if (typeof window.ethereum !== 'undefined') {
                 await window.ethereum.request({ method: 'eth_requestAccounts' })
                 this.init()
             } else {
                 //console.log('')
+                Toast.fail('当前浏览器不支持');
             }
         },
 
         //init metamask
         init() {
             this.currentAddress = window.ethereum.selectedAddress
+            this.$store.commit('getCurrentAddress', window.ethereum.selectedAddress)
             this.user_addr = window.ethereum.selectedAddress
 
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
@@ -207,13 +214,15 @@ export default {
                     } else {
                         this.buttonWord = '推广'
                         this.superiorAddress = v.parent
+                        this.$store.commit('getSuperiorAddress', v.parent)
+
                         this.havePreAddress = true
                         this.getPromoteRecord()
                     }
                     console.log(v)
                 })
             }
-
+            Toast.clear();
         },
 
         sleep(ms) {

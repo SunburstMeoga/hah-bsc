@@ -1,6 +1,7 @@
 import Vue from 'vue'
 
 import App from './App.vue'
+import store from './store'
 
 import Vant from 'vant';
 import 'vant/lib/index.css';
@@ -23,5 +24,6 @@ Vue.prototype.Web3 = Web3
 
 
 new Vue({
+    store,
     render: h => h(App)
 }).$mount('#app')

@@ -1,5 +1,7 @@
 <template>
     <div class="container">
+        <operating-address></operating-address>
+
         <van-field v-model="value1" style="padding: 10px 0;" name="流动性" label="流动性:" placeholder="xxx" readonly />
         <van-field v-model="value1" style="padding: 10px 0;" name="百分比" label="百分比:" placeholder="xxxx" readonly />
         <van-field v-model="value1" style="padding: 10px 0;" name="收益值" label="收益值:" placeholder="xxxx" readonly />
@@ -10,8 +12,6 @@
         <van-button round type="info">添加流动性</van-button>
         <br />
         <br />
-
-
         <van-field v-model="value1" style="padding: 10px 0;" name="" label="流动性金额:" placeholder="请输入流动性金额" />
         <van-button round type="danger">移除流动性</van-button>
         <br />
@@ -23,7 +23,9 @@
 </template>
 
 <script>
+import OperatingAddress from './OperatingAddress.vue'
 export default {
+    components: { OperatingAddress },
     data() {
         return {
             checked: true,
