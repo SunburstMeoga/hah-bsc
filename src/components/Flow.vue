@@ -16,7 +16,7 @@
         <br />
         <br />
 
-        <van-cell center title="USDT授权">
+        <van-cell center title="USDT授权" style="padding: 10px 0;">
             <template #right-icon>
                 <van-switch v-model="checked" size="24" />
             </template>
