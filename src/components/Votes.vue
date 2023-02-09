@@ -44,7 +44,9 @@ export default {
             powerPercentage: '',
             amount: '',
             lockNumber: '',
-            balance: ''
+            balance: '',
+            systemPowerNumber: '',
+            currentBlockHeight: ''
         }
     },
     mounted() {
@@ -57,6 +59,25 @@ export default {
             console.log(this.amount, this.balance)
             if (this.amount > this.balance) {
                 Toast.fail('投票金额不能大于地址余额');
+            } else {
+                const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
+                let data = con.methods.voteOut(this.web3.utils.toWei(this.amount.toString(), 'ether')).encodeABI();
+                const transactionParameters = {
+                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                    to: config.con_addr,
+                    from: window.ethereum.selectedAddress,
+                    data: data,
+                    chainId: this.web3.utils.toHex(this.chainId),
+                };
+                window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [transactionParameters],
+                });
+            }
+        },
+        toWithdraw() {
+            if (this.currentBlockHeight <= this.lockNumber) {
+                Toast.fail('当前区块高度不足');
             } else {
                 const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
                 let data = con.methods.voteIn(this.web3.utils.toWei(this.amount.toString(), 'ether')).encodeABI();
@@ -73,35 +94,35 @@ export default {
                 });
             }
         },
-        toWithdraw() {
-
-        },
         getAddressBalance() {
             const BigNumber = require('bignumber.js')
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
                 console.log('result', result)
                 this.balance = result
-
-                // this.addressBalance = (result / 10 ^ 18).toFixed(4)
                 this.addressBalance = new BigNumber(result).div(1000000000000000000n).toFixed(4)
             })
             web3Contract.methods.whole_power().call().then((result) => {
-                this.systemPower = result
+                this.systemPower = new BigNumber(result).div(10000000000000000n).toFixed(4)
+                this.systemPowerNumber = result
+            })
+            web3Contract.methods.profit(this.$store.state.currentAddress).call().then((result) => {
+                console.log('区块高度', result)
+                this.currentBlockHeight = result.number
             })
         },
         getInvestedAmount() {
             const BigNumber = require('bignumber.js')
-            // const b = new BigNumber(8765741234000000000000n).div(1000000000000000000n).toFixed(4)
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.spreads(this.$store.state.currentAddress).call().then((result) => {
                 console.log('已投金额', result)
                 this.investedAmount = new BigNumber(result.vote).div(1000000000000000000n).toFixed(4)
-                this.amplificationFactor = parseInt(result.vote_power) / parseInt(result.vote) * 10000
-                this.basicComputingPower = result.vote_power
-                this.submitComputingPower = result.real_power
-                this.powerPercentage = result.real_power / this.systemPower
-                console.log(result.real_power / this.systemPower)
+                this.amplificationFactor = parseInt(result.vote_power) / parseInt(result.vote) * 100
+                this.basicComputingPower = new BigNumber(result.vote_power).div(10000000000000000n).toFixed(4)
+                this.submitComputingPower = new BigNumber(result.real_power).div(10000000000000000n).toFixed(4)
+                this.powerPercentage = (result.real_power / this.systemPowerNumber) * 100 + '%'
+                this.lockNumber = result.lock_number + result.cycle_period * 2
+                console.log(result.real_power / this.systemPowerNumber)
             })
         },
         getAirdropAmount() {
