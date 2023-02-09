@@ -77,22 +77,26 @@ export default {
 
         },
         getAddressBalance() {
+            const BigNumber = require('bignumber.js')
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
                 console.log('result', result)
                 this.balance = result
 
-                this.addressBalance = (result / 10 ^ 18).toFixed(4)
+                // this.addressBalance = (result / 10 ^ 18).toFixed(4)
+                this.addressBalance = new BigNumber(result).div(1000000000000000000n).toFixed(4)
             })
             web3Contract.methods.whole_power().call().then((result) => {
                 this.systemPower = result
             })
         },
         getInvestedAmount() {
+            const BigNumber = require('bignumber.js')
+            // const b = new BigNumber(8765741234000000000000n).div(1000000000000000000n).toFixed(4)
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.spreads(this.$store.state.currentAddress).call().then((result) => {
                 console.log('已投金额', result)
-                this.investedAmount = (result.vote / 10 ^ 18).toFixed(4)
+                this.investedAmount = new BigNumber(result.vote).div(1000000000000000000n).toFixed(4)
                 this.amplificationFactor = parseInt(result.vote_power) / parseInt(result.vote) * 10000
                 this.basicComputingPower = result.vote_power
                 this.submitComputingPower = result.real_power
