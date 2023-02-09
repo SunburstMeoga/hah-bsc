@@ -7,7 +7,9 @@ const store = new Vuex.Store({
     state: {
         count: 0,
         currentAddress: '',
-        superiorAddress: ''
+        superiorAddress: '',
+        submitComputingPower: '',
+        basicComputingPower: ''
     },
     mutations: {
         getCurrentAddress(state, newval) {
@@ -16,6 +18,12 @@ const store = new Vuex.Store({
         getSuperiorAddress(state, newval) {
             state.superiorAddress = newval
         },
+        getSubmitComputingPower(state, newval) {
+            state.submitComputingPower = newval
+        },
+        getBasicComputingPower(state, newval) {
+            state.basicComputingPower = newval
+        }
     }
 })
 export default store

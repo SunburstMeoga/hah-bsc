@@ -113,11 +113,11 @@ export default {
             let sign_temp_data = eth_lib.Account.sign(this.web3.utils.keccak256(this.currentAddress), signObj.key);
             let vrs_temp = eth_lib.Account.decodeSignature(sign_temp_data);
 
-            const con = new this.web3.eth.Contract(config.erc20_abi, '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8');
+            const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
             let data = con.methods.popularizeFast(signObj.child, signObj.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();
             const transactionParameters = {
                 gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
-                to: '0x5E822d2c5b16F1a4Be09839a397E636DF1136Fc8',
+                to: config.con_addr,
                 from: window.ethereum.selectedAddress,
                 data: data,
                 chainId: this.web3.utils.toHex(this.chainId),

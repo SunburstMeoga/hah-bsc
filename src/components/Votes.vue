@@ -31,6 +31,14 @@ import { Toast } from 'vant';
 
 export default {
     components: { OperatingAddress, Toast },
+    computed: {
+        submitComputingPower() {
+            return this.$store.state.submitComputingPower;
+        },
+        basicComputingPower() {
+            return this.$store.state.basicComputingPower;
+        }
+    },
     data() {
         return {
             web3: new this.Web3(window.ethereum),
@@ -38,8 +46,6 @@ export default {
             investedAmount: '',
             airdropAmount: '',
             amplificationFactor: 0,
-            basicComputingPower: '',
-            submitComputingPower: '',
             systemPower: '',
             powerPercentage: '',
             amount: '',
@@ -118,8 +124,8 @@ export default {
                 console.log('已投金额', result)
                 this.investedAmount = new BigNumber(result.vote).div(1000000000000000000n).toFixed(4)
                 this.amplificationFactor = parseInt(result.vote_power) / parseInt(result.vote) * 100
-                this.basicComputingPower = new BigNumber(result.vote_power).div(10000000000000000n).toFixed(4)
-                this.submitComputingPower = new BigNumber(result.real_power).div(10000000000000000n).toFixed(4)
+                this.$store.commit('getSubmitComputingPower', new BigNumber(result.real_power).div(10000000000000000n).toFixed(4))
+                this.$store.commit('getBasicComputingPower', new BigNumber(result.vote_power).div(10000000000000000n).toFixed(4))
                 this.powerPercentage = (result.real_power / this.systemPowerNumber) * 100 + '%'
                 this.lockNumber = result.lock_number + result.cycle_period * 2
                 console.log(result.real_power / this.systemPowerNumber)
