@@ -1,27 +1,22 @@
 <template>
     <div class="container">
         <operating-address></operating-address>
-        <van-field v-model="addressBalance" style="padding: 10px 0;" name="地址余额" label="地址余额:" placeholder=""
+        <van-field v-model="addressBalance" style="padding: 10px 0;" name="地址余额" label="地址余额:" readonly />
+        <van-field v-model="investedAmount" style="padding: 10px 0;" name="已投金额" label="已投金额:" readonly />
+        <van-field v-model="airdropAmount" style="padding: 10px 0;" name="空投金额" label="空投金额:" readonly />
+        <van-field v-model="amplificationFactor" style="padding: 10px 0;" name="放大系数" label="放大系数:" readonly />
+        <van-field v-model="basicComputingPower" style="padding: 10px 0;" name="基本算力" label="基本算力:" readonly />
+        <van-field v-model="submitComputingPower" style="padding: 10px 0;" name="提交算力" label="提交算力:" readonly />
+        <van-field v-model="systemPower" style="padding: 10px 0;" name="系统总算力" label="系统总算力:" placeholder="" readonly />
+        <van-field v-model="powerPercentage" style="padding: 10px 0;" name="算力百分比" label="算力百分比:" placeholder=""
             readonly />
-        <van-field v-model="investedAmount" style="padding: 10px 0;" name="已投金额" label="已投金额:" placeholder=""
-            readonly />
-        <van-field v-model="airdropAmount" style="padding: 10px 0;" name="空投金额" label="空投金额:" placeholder="" readonly />
-        <van-field v-model="amplificationFactor" style="padding: 10px 0;" name="放大系数" label="放大系数:" placeholder="放大系数"
-            readonly />
-        <van-field v-model="basicComputingPower" style="padding: 10px 0;" name="基本算力" label="基本算力:" placeholder="基本算力"
-            readonly />
-        <van-field v-model="submitComputingPower" style="padding: 10px 0;" name="提交算力" label="提交算力:" placeholder="提交算力"
-            readonly />
-        <van-field v-model="systemPower" style="padding: 10px 0;" name="系统总算力" label="系统总算力:" placeholder="系统总算力"
-            readonly />
-        <van-field v-model="value1" style="padding: 10px 0;" name="算力百分比" label="算力百分比:" placeholder="算力百分比" readonly />
-        <van-field v-model="value1" style="padding: 10px 0;" name="请输入金额" label="请输入金额:" placeholder="请输入金额" />
+        <van-field v-model="amount" style="padding: 10px 0;" name="请输入金额" label="请输入金额:" placeholder="请输入金额" />
         <div class="button-group">
             <div class="button-item">
-                <van-button round type="info">投票</van-button>
+                <van-button round type="info" @click="toVotes">投票</van-button>
             </div>
             <div class="button-item">
-                <van-button round type="primary">撤投</van-button>
+                <van-button round type="primary" @click="toWithdraw">撤投</van-button>
             </div>
 
         </div>
@@ -31,12 +26,13 @@
 <script>
 import OperatingAddress from './OperatingAddress.vue'
 import { config } from '../const/config.js'
+import { Toast } from 'vant';
+
 
 export default {
-    components: { OperatingAddress },
+    components: { OperatingAddress, Toast },
     data() {
         return {
-            value1: 'sfsf',
             web3: new this.Web3(window.ethereum),
             addressBalance: '',
             investedAmount: '',
@@ -44,7 +40,11 @@ export default {
             amplificationFactor: 0,
             basicComputingPower: '',
             submitComputingPower: '',
-            systemPower: ''
+            systemPower: '',
+            powerPercentage: '',
+            amount: '',
+            lockNumber: '',
+            balance: ''
         }
     },
     mounted() {
@@ -53,22 +53,51 @@ export default {
         this.getAirdropAmount()
     },
     methods: {
+        toVotes() {
+            console.log(this.amount, this.balance)
+            if (this.amount > this.balance) {
+                Toast.fail('投票金额不能大于地址余额');
+            } else {
+                const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
+                let data = con.methods.voteIn(this.web3.utils.toWei(this.amount.toString(), 'ether')).encodeABI();
+                const transactionParameters = {
+                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                    to: config.con_addr,
+                    from: window.ethereum.selectedAddress,
+                    data: data,
+                    chainId: this.web3.utils.toHex(this.chainId),
+                };
+                window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [transactionParameters],
+                });
+            }
+        },
+        toWithdraw() {
+
+        },
         getAddressBalance() {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
                 console.log('result', result)
-                this.addressBalance = result
+                this.balance = result
+
+                this.addressBalance = (result / 10 ^ 18).toFixed(4)
+            })
+            web3Contract.methods.whole_power().call().then((result) => {
+                this.systemPower = result
             })
         },
         getInvestedAmount() {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.spreads(this.$store.state.currentAddress).call().then((result) => {
                 console.log('已投金额', result)
-                this.investedAmount = result.vote
+                this.investedAmount = (result.vote / 10 ^ 18).toFixed(4)
                 this.amplificationFactor = parseInt(result.vote_power) / parseInt(result.vote) * 10000
                 this.basicComputingPower = result.vote_power
                 this.submitComputingPower = result.real_power
-                this.systemPower = result.whole_power
+                this.powerPercentage = result.real_power / this.systemPower
+                console.log(result.real_power / this.systemPower)
             })
         },
         getAirdropAmount() {
