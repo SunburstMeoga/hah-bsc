@@ -57,7 +57,7 @@ export default {
                 Toast('添加的HAB数量不得小于0')
             } else {
                 let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
-                let data = web3Contract.methods.addLiquidity(this.HABAmount).encodeABI();
+                let data = web3Contract.methods.addLiquidity(this.web3.utils.toWei(this.HABAmount.toString(), 'ether')).encodeABI();
                 const transactionParameters = {
                     gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                     to: config.con_addr,
@@ -73,11 +73,12 @@ export default {
         },
         //移除流动性
         removeLiquidity() {
-            if (this.fluidityAmount <= this.fluidityNumber) {
+            console.log(this.fluidityAmount, this.fluidity)
+            if (this.fluidityAmount > this.fluidity) {
                 Toast('不得大于当前流动性')
             } else {
                 let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
-                let data = web3Contract.methods.removeLiquidity(this.fluidityAmount).encodeABI();
+                let data = web3Contract.methods.removeLiquidity(this.web3.utils.toWei(this.fluidityAmount.toString(), 'ether')).encodeABI();
                 const transactionParameters = {
                     gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                     to: config.con_addr,
@@ -113,16 +114,16 @@ export default {
             let web3ContractUSDT = new this.web3.eth.Contract(config.erc20_abi, config.usdt_address)
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             // 流动性
-            web3ContractPair.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
-                console.log('流动性', result)
-                this.fluidityNumber = result
-                this.fluidity = new BigNumber(result).div(1000000000000000000n).toFixed(4)
+            web3Contract.methods.lps(this.$store.state.currentAddress).call().then((result) => {
+                console.log('流动性', result.lp)
+                this.fluidityNumber = result.lp
+                this.fluidity = new BigNumber(result.lp).div(1000000000000000000n).toFixed(4)
             })
             //百分比和收益值
             web3Contract.methods.profit(this.$store.state.currentAddress).call().then((result) => {
                 console.log('百分比和收益值', result)
-                this.percentage = result.lp_value
-                this.incomeValue = result.lp_ratio / 10000 + '%'
+                this.incomeValue = new BigNumber(result.lp_value).div(1000000000000000000n).toFixed(4)
+                this.percentage = result.lp_ratio / 10000 + '%'
             })
             // HAB余额
             web3Contract.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
