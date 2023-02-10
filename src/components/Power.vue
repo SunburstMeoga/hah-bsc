@@ -60,7 +60,7 @@ export default {
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             let data = web3Contract.methods.voteMining().encodeABI();
             const transactionParameters = {
-                gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                 to: config.con_addr,
                 from: window.ethereum.selectedAddress,
                 data: data,
@@ -95,7 +95,6 @@ export default {
             } else if (this.actualComputingPower > this.submitComputingPower) {
                 this.buttonWord = '提交算力'
                 this.disabled = false
-
 
             } else {
                 this.buttonWord = '提交算力'

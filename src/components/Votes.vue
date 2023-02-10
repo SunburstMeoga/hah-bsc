@@ -56,20 +56,24 @@ export default {
         }
     },
     mounted() {
-        this.getAddressBalance()
-        this.getInvestedAmount()
-        this.getAirdropAmount()
+        this.getAddressInfo()
     },
     methods: {
+        //投票按钮
         toVotes() {
+
             console.log(this.amount, this.balance)
             if (this.amount > this.balance) {
                 Toast.fail('投票金额不能大于地址余额');
             } else {
+                Toast.loading({
+                    message: '加载中...',
+                    forbidClick: true,
+                });
                 const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
                 let data = con.methods.voteOut(this.web3.utils.toWei(this.amount.toString(), 'ether')).encodeABI();
                 const transactionParameters = {
-                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                     to: config.con_addr,
                     from: window.ethereum.selectedAddress,
                     data: data,
@@ -79,8 +83,10 @@ export default {
                     method: 'eth_sendTransaction',
                     params: [transactionParameters],
                 });
+                Toast.clear()
             }
         },
+        //撤投按钮
         toWithdraw() {
             if (this.currentBlockHeight <= this.lockNumber) {
                 Toast.fail('当前区块高度不足');
@@ -88,7 +94,7 @@ export default {
                 const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
                 let data = con.methods.voteIn(this.web3.utils.toWei(this.amount.toString(), 'ether')).encodeABI();
                 const transactionParameters = {
-                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                    gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                     to: config.con_addr,
                     from: window.ethereum.selectedAddress,
                     data: data,
@@ -100,7 +106,12 @@ export default {
                 });
             }
         },
-        getAddressBalance() {
+        //当前地址信息
+        getAddressInfo() {
+            Toast.loading({
+                message: '加载中...',
+                forbidClick: true,
+            });
             const BigNumber = require('bignumber.js')
             let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.balanceOf(this.$store.state.currentAddress).call().then((result) => {
@@ -116,10 +127,6 @@ export default {
                 console.log('区块高度', result)
                 this.currentBlockHeight = result.number
             })
-        },
-        getInvestedAmount() {
-            const BigNumber = require('bignumber.js')
-            let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.spreads(this.$store.state.currentAddress).call().then((result) => {
                 console.log('已投金额', result)
                 this.investedAmount = new BigNumber(result.vote).div(1000000000000000000n).toFixed(4)
@@ -130,14 +137,12 @@ export default {
                 this.lockNumber = result.lock_number + result.cycle_period * 2
                 console.log(result.real_power / this.systemPowerNumber)
             })
-        },
-        getAirdropAmount() {
-            let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
             web3Contract.methods.airdrops(this.$store.state.currentAddress).call().then((result) => {
                 console.log('空投金额', result)
                 this.airdropAmount = result.vote
 
             })
+            Toast.clear()
         },
 
     }

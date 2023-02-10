@@ -116,7 +116,7 @@ export default {
             const con = new this.web3.eth.Contract(config.erc20_abi, config.con_addr);
             let data = con.methods.popularizeFast(signObj.child, signObj.address, vrs[0], vrs[1], vrs[2], vrs_temp[0], vrs_temp[1], vrs_temp[2]).encodeABI();
             const transactionParameters = {
-                gasPrice: this.web3.utils.toHex(this.web3.utils.toWei('10', 'Gwei')),
+                gasPrice: this.web3.utils.toHex(this.web3.utils.toWei(config.amount, config.unit)),
                 to: config.con_addr,
                 from: window.ethereum.selectedAddress,
                 data: data,
