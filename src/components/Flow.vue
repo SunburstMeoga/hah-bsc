@@ -73,8 +73,8 @@ export default {
         },
         //移除流动性
         removeLiquidity() {
-            console.log(this.fluidityAmount, this.fluidity)
-            if (this.fluidityAmount > this.fluidity) {
+            console.log(Number(this.fluidityAmount), Number(this.fluidity))
+            if (Number(this.fluidityAmount) > Number(this.fluidity)) {
                 Toast('不得大于当前流动性')
             } else {
                 let web3Contract = new this.web3.eth.Contract(config.erc20_abi, config.con_addr)
